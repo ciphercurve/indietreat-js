@@ -57,6 +57,23 @@ const eventListener = indietreat.onPurchase(1, (event) => {
 // eventListener.stop();
 ```
 
+
+## Example output from EventListener
+```
+🎉 Purchase #1 detected (24912ms elapsed)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📦 Product: Example Product #1
+👤 Username: jonas
+🆔 User ID: 1752513806740
+🏪 Store ID: 1
+🛒 Purchase ID: 4
+💰 Amount: 10000000000000 wei
+👛 Wallet: 0x789226ed4EA2D248d2d4dd4A136459d44DD0fD41
+⏰ Timestamp: 2025-07-14T17:23:36.000Z
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+Wallet here is the recipient wallet address. You must check that it matches the address for your product based on the `product name` and your `store id`.
+
 ## 🛠️ Development
 
 ### Prerequisites
@@ -98,11 +115,6 @@ Explore the examples to see the SDK in action:
 ### Basic Usage
 ```bash
 npx ts-node examples/basic-usage.ts
-```
-
-### Purchase Events
-```bash
-npx ts-node examples/purchase-events.ts
 ```
 
 ### Robust Event Listener
@@ -155,6 +167,12 @@ Executes a purchase transaction (requires wallet connection).
 
 ### Common Issues
 
+#### Duplicate Events (Fixed in v1.1.0)
+The SDK now includes robust deduplication to prevent the same purchase event from being processed multiple times. This fix addresses:
+- Events being fired 6x instead of once
+- Duplicate callbacks from multiple event listening mechanisms
+- Memory leaks from unprocessed events
+
 #### Filter Not Found Error
 If you encounter a "filter not found" error, the improved `onPurchase` method will automatically handle this by:
 - Detecting the error and recreating the filter
@@ -197,11 +215,3 @@ The event listener includes built-in resilience for:
 ## 🤝 Contributing
 
 We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
-
-### Development Workflow
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request

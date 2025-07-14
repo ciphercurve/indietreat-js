@@ -185,120 +185,77 @@ export class IndieTreat {
         options: EventListenerOptions = {}
     ): EventListener {
         const {
-            pollInterval = 1000,
+            pollInterval = 2000,
             maxRetries = 5,
             retryDelay = 1000
         } = options;
 
         let isListening = true;
-        let retryCount = 0;
-        let filter: any = null;
-
-        const createFilter = async () => {
-            try {
-                filter = this.contract.filters.PurchaseMade(storeId);
-                retryCount = 0; // Reset retry count on successful filter creation
-                return filter;
-            } catch (error) {
-                throw new Error(`Failed to create filter: ${error}`);
-            }
-        };
-
-        const setupEventListener = async () => {
-            try {
-                if (!filter) {
-                    filter = await createFilter();
-                }
-
-                const listener = (storeId: any, purchaseId: any, productName: any, username: any, userId: any, timestamp: any, amount: any, wallet: any) => {
-                    const event: PurchaseEvent = {
-                        storeId,
-                        purchaseId,
-                        productName,
-                        username,
-                        userId,
-                        timestamp,
-                        amount,
-                        wallet
-                    };
-                    callback(event);
-                };
-
-                this.contract.on(filter, listener);
-
-                // Return cleanup function
-                return () => {
-                    this.contract.off(filter, listener);
-                };
-            } catch (error) {
-                throw error;
-            }
-        };
+        let lastProcessedBlock = 0n;
+        const processedEvents = new Set<string>(); // Track processed events to prevent duplicates
 
         const startPolling = async () => {
             while (isListening) {
                 try {
-                    if (!filter) {
-                        filter = await createFilter();
-                    }
+                    // Get current block number
+                    const currentBlock = BigInt(await this.provider.getBlockNumber());
 
-                    // Get filter changes
-                    const logs = await this.provider.getLogs({
-                        address: this.contract.target,
-                        topics: filter.topics,
-                        fromBlock: 'latest'
-                    });
+                    // Start from the current block if this is the first run
+                    const fromBlock = lastProcessedBlock > 0n ? lastProcessedBlock + 1n : currentBlock;
+                    const toBlock = currentBlock;
 
-                    // Process any new events
-                    for (const log of logs) {
-                        try {
-                            const parsedLog = this.contract.interface.parseLog(log);
-                            if (parsedLog && parsedLog.args) {
-                                const event: PurchaseEvent = {
-                                    storeId: parsedLog.args[0],
-                                    purchaseId: parsedLog.args[1],
-                                    productName: parsedLog.args[2],
-                                    username: parsedLog.args[3],
-                                    userId: parsedLog.args[4],
-                                    timestamp: parsedLog.args[5],
-                                    amount: parsedLog.args[6],
-                                    wallet: parsedLog.args[7]
-                                };
-                                callback(event);
+                    // Only query if we have a valid block range
+                    if (fromBlock <= toBlock) {
+                        // Get logs for PurchaseMade events for this store
+                        const logs = await this.provider.getLogs({
+                            address: this.contract.target,
+                            topics: [
+                                this.contract.interface.getEvent('PurchaseMade')?.topicHash,
+                                ethers.zeroPadValue(ethers.toBeHex(storeId), 32)
+                            ].filter(Boolean) as string[],
+                            fromBlock: fromBlock,
+                            toBlock: toBlock
+                        });
+
+                        // Process any new events
+                        for (const log of logs) {
+                            try {
+                                const parsedLog = this.contract.interface.parseLog(log);
+                                if (parsedLog && parsedLog.args) {
+                                    // Create unique event identifier for deduplication
+                                    const eventId = `${parsedLog.args[0]}-${parsedLog.args[1]}-${parsedLog.args[5]}`;
+
+                                    // Skip if already processed
+                                    if (processedEvents.has(eventId)) {
+                                        continue;
+                                    }
+
+                                    processedEvents.add(eventId);
+
+                                    const event: PurchaseEvent = {
+                                        storeId: parsedLog.args[0],
+                                        purchaseId: parsedLog.args[1],
+                                        productName: parsedLog.args[2],
+                                        username: parsedLog.args[3],
+                                        userId: parsedLog.args[4],
+                                        timestamp: parsedLog.args[5],
+                                        amount: parsedLog.args[6],
+                                        wallet: parsedLog.args[7]
+                                    };
+                                    callback(event);
+                                }
+                            } catch (parseError) {
+                                console.warn('Failed to parse log:', parseError);
                             }
-                        } catch (parseError) {
-                            console.warn('Failed to parse log:', parseError);
                         }
-                    }
 
-                    retryCount = 0; // Reset retry count on successful polling
+                        // Update last processed block
+                        lastProcessedBlock = currentBlock;
+                    }
                 } catch (error: any) {
-                    retryCount++;
+                    console.warn('Error during event polling:', error.message || error);
 
-                    // Check if it's a filter not found error
-                    if (error.code === -32000 && error.message?.includes('filter not found')) {
-                        console.warn(`Filter not found, recreating... (attempt ${retryCount}/${maxRetries})`);
-                        filter = null; // Reset filter to force recreation
-
-                        if (retryCount >= maxRetries) {
-                            console.error('Max retries reached for filter recreation');
-                            throw new Error('Failed to recreate filter after maximum retries');
-                        }
-
-                        // Wait before retrying
-                        await new Promise(resolve => setTimeout(resolve, retryDelay));
-                        continue;
-                    }
-
-                    // For other errors, log and continue
-                    console.warn('Error during event polling:', error);
-
-                    if (retryCount >= maxRetries) {
-                        console.error('Max retries reached, stopping event listener');
-                        break;
-                    }
-
-                    // Wait before retrying
+                    // Simple retry logic - just wait and continue
                     await new Promise(resolve => setTimeout(resolve, retryDelay));
                 }
 
@@ -307,7 +264,8 @@ export class IndieTreat {
             }
         };
 
-        // Start the polling process
+        // Start polling
+        console.log('Using polling-based event listener for real-time events');
         startPolling().catch(error => {
             console.error('Event listener error:', error);
         });
@@ -316,6 +274,8 @@ export class IndieTreat {
         return {
             stop: () => {
                 isListening = false;
+                // Clear processed events to free memory
+                processedEvents.clear();
             }
         };
     }
