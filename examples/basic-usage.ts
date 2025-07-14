@@ -32,6 +32,7 @@ async function example() {
             if (purchaseCount > 0n) {
                 const firstPurchase = await indietreat.getPurchase(storeId, 0);
                 console.log(`First purchase for store ${storeId}:`, firstPurchase);
+                console.log(`Wallet address: ${firstPurchase.wallet}`);
             }
         }
     } catch (error) {

@@ -4,7 +4,7 @@ export interface Purchase {
     userId: bigint;
     timestamp: bigint;
     amount: bigint;
-    wallet?: string; // Optional since not available in getPurchase function
+    wallet: string;
 }
 
 export interface PurchaseEvent {

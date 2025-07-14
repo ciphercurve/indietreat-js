@@ -68,8 +68,8 @@ export class IndieTreat {
                 username: result[1],
                 userId: result[2],
                 timestamp: result[3],
-                amount: result[4]
-                // wallet is not available in getPurchase function, only in events
+                amount: result[4],
+                wallet: result[5],
             };
         } catch (error) {
             throw new Error(`Failed to get purchase: ${error}`);

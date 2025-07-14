@@ -71,6 +71,11 @@ export const INDIETREAT_ABI = [
                 "internalType": "uint256",
                 "name": "amount",
                 "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "wallet",
+                "type": "address"
             }
         ],
         "stateMutability": "view",
