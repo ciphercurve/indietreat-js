@@ -1,0 +1,41 @@
+{
+    "name": "indietreat-js",
+    "version": "1.0.0",
+    "description": "JavaScript SDK for the IndieTreat smart contract",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsc",
+        "dev": "tsc --watch",
+        "test": "jest",
+        "lint": "eslint src/**/*.ts",
+        "format": "prettier --write src/**/*.ts"
+    },
+    "keywords": [
+        "ethereum",
+        "smart-contract",
+        "sdk",
+        "indietreat",
+        "purchases"
+    ],
+    "author": "",
+    "license": "MIT",
+    "dependencies": {
+        "ethers": "^6.8.1"
+    },
+    "devDependencies": {
+        "@types/jest": "^29.5.5",
+        "@types/node": "^20.8.0",
+        "@typescript-eslint/eslint-plugin": "^6.8.0",
+        "@typescript-eslint/parser": "^6.8.0",
+        "eslint": "^8.51.0",
+        "jest": "^29.7.0",
+        "prettier": "^3.0.3",
+        "ts-jest": "^29.1.1",
+        "typescript": "^5.2.2"
+    },
+    "files": [
+        "dist",
+        "README.md"
+    ]
+}
