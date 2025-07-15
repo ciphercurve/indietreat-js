@@ -13,13 +13,6 @@ The **IndieTreat JavaScript SDK** provides a simple and intuitive interface to i
 All you need to utilize this code is your `store id`. To get your `store id`, navigate to "manage account" and copy the #NUMBER after your username, for example `User#101`.
 Currently the sdk points to our testnet contract on Sepolia `0xB99382f5df4f0e692F75d956820C515389ca5dCE`.
 
-### ✨ Features
-
-- 🔍 **Read Purchase Data** - Query purchase information from the smart contract
-- 📡 **Real-time Events** - Listen to purchase events as they happen
-- 💳 **Make Purchases** - Execute purchases with proper authentication
-- 🛡️ **Type Safety** - Built with TypeScript for better developer experience
-- ⚡ **Lightweight** - Minimal dependencies and optimized performance
 
 ## 🚀 Quick Start
 
@@ -36,8 +29,8 @@ import { IndieTreat } from 'indietreat-js';
 
 // Initialize the SDK
 const indietreat = new IndieTreat({
-  contractAddress: '0x1234567890123456789012345678901234567890',
-  rpcUrl: 'https://mainnet.infura.io/v3/YOUR_PROJECT_ID'
+  contractAddress: '0xB99382f5df4f0e692F75d956820C515389ca5dCE',
+  rpcUrl: 'https://ethereum-sepolia-rpc.publicnode.com'
 });
 
 // Get purchase count for a store
@@ -163,27 +156,6 @@ Sets up a robust listener for purchase events on a specific store with automatic
 #### `makePurchase(storeId: number, amount: string): Promise<TransactionReceipt>`
 Executes a purchase transaction (requires wallet connection).
 
-## 🔧 Error Handling & Troubleshooting
-
-### Common Issues
-
-#### Duplicate Events (Fixed in v1.1.0)
-The SDK now includes robust deduplication to prevent the same purchase event from being processed multiple times. This fix addresses:
-- Events being fired 6x instead of once
-- Duplicate callbacks from multiple event listening mechanisms
-- Memory leaks from unprocessed events
-
-#### Filter Not Found Error
-If you encounter a "filter not found" error, the improved `onPurchase` method will automatically handle this by:
-- Detecting the error and recreating the filter
-- Retrying the operation with configurable retry limits
-- Logging warnings and errors for debugging
-
-#### Network Connectivity Issues
-The event listener includes built-in resilience for:
-- Temporary network disconnections
-- RPC endpoint timeouts
-- Filter expiration
 
 ### Best Practices
 
@@ -211,7 +183,3 @@ The event listener includes built-in resilience for:
      process.exit(0);
    });
    ```
-
-## 🤝 Contributing
-
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
