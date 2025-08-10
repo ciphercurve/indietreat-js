@@ -253,9 +253,6 @@ export class OptiMona {
                         lastProcessedBlock = currentBlock;
                     }
                 } catch (error: any) {
-                    console.warn('Error during event polling:', error.message || error);
-
-                    // Simple retry logic - just wait and continue
                     await new Promise(resolve => setTimeout(resolve, retryDelay));
                 }
 

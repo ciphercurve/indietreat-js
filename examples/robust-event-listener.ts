@@ -7,7 +7,7 @@ async function robustEventListenerExample() {
         rpcUrl: 'https://optimism-rpc.publicnode.com'
     });
 
-    const storeId = 3; // Replace with actual store ID
+    const storeId = 1; // Replace with actual store ID
 
     console.log('🚀 Starting event listener...');
     console.log(`📡 Listening to purchase events for store ${storeId}`);
