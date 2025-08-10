@@ -1,7 +1,7 @@
 {
-    "name": "indietreat-js",
+    "name": "optimona-js",
     "version": "1.0.0",
-    "description": "JavaScript SDK for the IndieTreat smart contract",
+    "description": "JavaScript SDK for the OptiMona smart contract",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "scripts": {
@@ -15,7 +15,7 @@
         "ethereum",
         "smart-contract",
         "sdk",
-        "indietreat",
+        "optimona",
         "purchases"
     ],
     "author": "",

@@ -32,13 +32,13 @@ type EthersMockType = typeof ethersMock & { ethers: any };
 
 jest.mock('ethers', () => ethersMock);
 
-import { IndieTreat } from '../IndieTreat';
+import { OptiMona } from '../OptiMona';
 
-describe('IndieTreat SDK', () => {
-    let indietreat: IndieTreat;
+describe('OptiMona SDK', () => {
+    let optimona: OptiMona;
 
     beforeEach(() => {
-        indietreat = new IndieTreat({
+        optimona = new OptiMona({
             contractAddress: '0x1234567890123456789012345678901234567890',
             rpcUrl: 'https://example.com'
         });
@@ -47,42 +47,42 @@ describe('IndieTreat SDK', () => {
     describe('constructor validation', () => {
         it('should throw error if contract address is missing', () => {
             expect(() => {
-                new IndieTreat({} as any);
+                new OptiMona({} as any);
             }).toThrow('Contract address is required');
         });
 
         it('should throw error if neither provider nor rpcUrl is provided', () => {
             expect(() => {
-                new IndieTreat({ contractAddress: '0x123' } as any);
+                new OptiMona({ contractAddress: '0x123' } as any);
             }).toThrow('Either provider or rpcUrl must be provided');
         });
 
         it('should initialize with valid config', () => {
-            expect(indietreat).toBeInstanceOf(IndieTreat);
+            expect(optimona).toBeInstanceOf(OptiMona);
         });
     });
 
     describe('SDK instance', () => {
         it('should have required methods', () => {
-            expect(typeof indietreat.getStorePurchaseCount).toBe('function');
-            expect(typeof indietreat.getPurchase).toBe('function');
-            expect(typeof indietreat.getAllPurchases).toBe('function');
-            expect(typeof indietreat.storeExists).toBe('function');
-            expect(typeof indietreat.purchase).toBe('function');
-            expect(typeof indietreat.onPurchase).toBe('function');
+            expect(typeof optimona.getStorePurchaseCount).toBe('function');
+            expect(typeof optimona.getPurchase).toBe('function');
+            expect(typeof optimona.getAllPurchases).toBe('function');
+            expect(typeof optimona.storeExists).toBe('function');
+            expect(typeof optimona.purchase).toBe('function');
+            expect(typeof optimona.onPurchase).toBe('function');
         });
 
         it('should return contract, provider, and signer instances', () => {
-            expect(indietreat.getContract()).toBeDefined();
-            expect(indietreat.getProvider()).toBeDefined();
-            expect(indietreat.getSigner()).toBeUndefined();
+            expect(optimona.getContract()).toBeDefined();
+            expect(optimona.getProvider()).toBeDefined();
+            expect(optimona.getSigner()).toBeUndefined();
         });
     });
 
     describe('onPurchase method', () => {
         it('should return an EventListener with stop method', () => {
             const mockCallback = jest.fn();
-            const eventListener = indietreat.onPurchase(1, mockCallback);
+            const eventListener = optimona.onPurchase(1, mockCallback);
 
             expect(eventListener).toBeDefined();
             expect(typeof eventListener.stop).toBe('function');
@@ -96,7 +96,7 @@ describe('IndieTreat SDK', () => {
                 retryDelay: 2000
             };
 
-            const eventListener = indietreat.onPurchase(1, mockCallback, options);
+            const eventListener = optimona.onPurchase(1, mockCallback, options);
 
             expect(eventListener).toBeDefined();
             expect(typeof eventListener.stop).toBe('function');

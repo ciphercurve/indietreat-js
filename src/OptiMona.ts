@@ -1,7 +1,7 @@
 import { ethers, Contract, Provider, Signer } from 'ethers';
 import { INDIETREAT_ABI } from './contract/abi';
 import {
-    IndieTreatConfig,
+    OptiMonaConfig,
     Purchase,
     PurchaseOptions,
     PurchaseEvent,
@@ -9,12 +9,12 @@ import {
     EventListener
 } from './types';
 
-export class IndieTreat {
+export class OptiMona {
     private contract: Contract;
     private provider: Provider;
     private signer?: Signer;
 
-    constructor(config: IndieTreatConfig) {
+    constructor(config: OptiMonaConfig) {
         if (!config.contractAddress) {
             throw new Error('Contract address is required');
         }

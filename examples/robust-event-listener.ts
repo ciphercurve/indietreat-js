@@ -1,13 +1,13 @@
-import { IndieTreat } from '../src';
+import { OptiMona } from '../src';
 
 async function robustEventListenerExample() {
     // Initialize the SDK with contract address and RPC URL
-    const indietreat = new IndieTreat({
-        contractAddress: '0xB99382f5df4f0e692F75d956820C515389ca5dCE',
-        rpcUrl: 'https://ethereum-sepolia-rpc.publicnode.com'
+    const optimona = new OptiMona({
+        contractAddress: '0xa83E7fDF932b38B158963ec9b0492D3a5AEa9cfE',
+        rpcUrl: 'https://optimism-rpc.publicnode.com'
     });
 
-    const storeId = 1; // Replace with actual store ID
+    const storeId = 3; // Replace with actual store ID
 
     console.log('🚀 Starting event listener...');
     console.log(`📡 Listening to purchase events for store ${storeId}`);
@@ -16,7 +16,7 @@ async function robustEventListenerExample() {
     const startTime = Date.now();
 
     // Listen to purchase events
-    const eventListener = indietreat.onPurchase(storeId, (event) => {
+    const eventListener = optimona.onPurchase(storeId, (event) => {
         eventCount++;
         const elapsed = Date.now() - startTime;
 

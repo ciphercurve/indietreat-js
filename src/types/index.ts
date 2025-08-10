@@ -18,7 +18,7 @@ export interface PurchaseEvent {
     wallet: string;
 }
 
-export interface IndieTreatConfig {
+export interface OptiMonaConfig {
     contractAddress: string;
     rpcUrl?: string;
     provider?: any; // ethers Provider

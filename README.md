@@ -1,15 +1,15 @@
-# IndieTreat JavaScript SDK
+# OptiMona JavaScript SDK
 
-[![npm version](https://badge.fury.io/js/indietreat-js.svg)](https://badge.fury.io/js/indietreat-js)
+[![npm version](https://badge.fury.io/js/optimona-js.svg)](https://badge.fury.io/js/optimona-js)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Ethereum](https://img.shields.io/badge/Ethereum-3C3C3D?logo=ethereum&logoColor=white)](https://ethereum.org/)
 
-> A modern JavaScript SDK for interacting with the IndieTreat smart contract on Ethereum blockchain
+> A modern JavaScript SDK for interacting with the OptiMona smart contract on Ethereum blockchain
 
 ## 📖 Overview
 
-The **IndieTreat JavaScript SDK** provides a simple and intuitive interface to interact with the IndieTreat smart contract, which tracks purchases across different stores.
+The **OptiMona JavaScript SDK** provides a simple and intuitive interface to interact with the OptiMona smart contract, which tracks purchases across different stores.
 All you need to utilize this code is your `store id`. To get your `store id`, navigate to "manage account" and copy the #NUMBER after your username, for example `User#101`.
 Currently the sdk points to our testnet contract on Sepolia `0xB99382f5df4f0e692F75d956820C515389ca5dCE`.
 
@@ -19,26 +19,26 @@ Currently the sdk points to our testnet contract on Sepolia `0xB99382f5df4f0e692
 ### Installation
 
 ```bash
-npm install indietreat-js
+npm install optimona-js
 ```
 
 ### Basic Usage
 
 ```typescript
-import { IndieTreat } from 'indietreat-js';
+import { OptiMona } from 'optimona-js';
 
 // Initialize the SDK
-const indietreat = new IndieTreat({
+const optimona = new OptiMona({
   contractAddress: '0xB99382f5df4f0e692F75d956820C515389ca5dCE',
   rpcUrl: 'https://ethereum-sepolia-rpc.publicnode.com'
 });
 
 // Get purchase count for a store
-const count = await indietreat.getStorePurchaseCount(1);
+const count = await optimona.getStorePurchaseCount(1);
 console.log(`Store 1 has ${count} purchases`);
 
 // Listen to purchase events with robust error handling
-const eventListener = indietreat.onPurchase(1, (event) => {
+const eventListener = optimona.onPurchase(1, (event) => {
   console.log('🎉 New purchase:', event);
 }, {
   pollInterval: 2000,  // Poll every 2 seconds
@@ -78,8 +78,8 @@ Wallet here is the recipient wallet address. You must check that it matches the 
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/your-username/indietreat-js.git
-   cd indietreat-js
+   git clone https://github.com/your-username/optimona-js.git
+   cd optimona-js
    ```
 
 2. **Install dependencies**
@@ -120,8 +120,8 @@ npx ts-node examples/robust-event-listener.ts
 The SDK requires the following configuration:
 
 ```typescript
-interface IndieTreatConfig {
-  contractAddress: string;  // The deployed IndieTreat contract address
+interface OptiMonaConfig {
+  contractAddress: string;  // The deployed OptiMona contract address
   rpcUrl: string;          // Ethereum RPC endpoint (Infura, Alchemy, etc.)
 }
 ```
@@ -170,7 +170,7 @@ Executes a purchase transaction (requires wallet connection).
 
 2. **Always Clean Up Event Listeners**
    ```typescript
-   const listener = indietreat.onPurchase(storeId, callback);
+   const listener = optimona.onPurchase(storeId, callback);
    
    // Clean up when done
    listener.stop();
